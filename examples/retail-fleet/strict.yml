@@ -1,0 +1,42 @@
+config_version: 2
+environment: development
+
+source:
+  id: local-source
+  database_url: postgresql://trellara:trellara@localhost:55432/trellara_source
+  publication: trellara_retail
+  slot: trellara_retail_slot
+  wal_retention_warn_bytes: 1073741824
+  pgoutput:
+    protocol_version: 2
+    streaming: true
+
+dataset:
+  id: retail-sales
+  mode: strict_transaction_order
+  tables:
+    - schema: public
+      name: sales
+      verify:
+        primary_key: id
+        excluded_columns: [updated_at]
+    - schema: public
+      name: sale_items
+      verify:
+        primary_key: id
+        excluded_columns: [updated_at]
+    - schema: public
+      name: payments
+      verify:
+        primary_key: id
+        excluded_columns: [updated_at]
+
+stream:
+  kind: kafka
+  profile:
+    kind: development
+  bootstrap_servers: localhost:9092
+  topic: trellara.local-source.retail-sales.strict
+
+target:
+  database_url: postgresql://trellara:trellara@localhost:55433/trellara_target

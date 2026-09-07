@@ -1,0 +1,72 @@
+[workspace]
+members = [
+    "crates/trellara-apply-postgres",
+    "crates/trellara-check",
+    "crates/trellara-checkpoint",
+    "crates/trellara-cli",
+    "crates/trellara-iceberg",
+    "crates/trellara-lake",
+    "crates/trellara-pg-capture",
+    "crates/trellara-pg-extension",
+    "crates/trellara-protocol",
+    "crates/trellara-relay",
+    "crates/trellara-runtime",
+    "crates/trellara-sim",
+    "crates/trellara-stream",
+    "crates/trellara-stream-kafka",
+    "crates/trellara-stream-local",
+    "crates/trellara-verify",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/trellara/trellara"
+rust-version = "1.97.1"
+
+[workspace.dependencies]
+async-trait = "0.1"
+bytes = { version = "1", features = ["serde"] }
+clap = { version = "4", features = ["derive"] }
+crc32fast = "1"
+fallible-iterator = "0.2"
+postgres-protocol = "0.6"
+prost = "0.13"
+proptest = "1"
+rdkafka = { version = "0.37", features = ["cmake-build"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+sha2 = "0.10"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+rustls-native-certs = "0.8"
+thiserror = "1"
+time = { version = "0.3", features = ["formatting", "macros", "serde"] }
+tokio = { version = "1", features = ["io-util", "macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
+tokio-postgres = "0.7"
+tokio-postgres-rustls = { version = "0.14", features = ["ring"] }
+tracing = "0.1"
+webpki-roots = "1"
+trellara-protocol = { path = "crates/trellara-protocol" }
+trellara-checkpoint = { path = "crates/trellara-checkpoint" }
+trellara-iceberg = { path = "crates/trellara-iceberg" }
+trellara-lake = { path = "crates/trellara-lake" }
+trellara-pg-capture = { path = "crates/trellara-pg-capture" }
+trellara-pg-extension = { path = "crates/trellara-pg-extension" }
+trellara-apply-postgres = { path = "crates/trellara-apply-postgres" }
+trellara-relay = { path = "crates/trellara-relay" }
+trellara-runtime = { path = "crates/trellara-runtime" }
+trellara-sim = { path = "crates/trellara-sim" }
+trellara-stream = { path = "crates/trellara-stream" }
+trellara-stream-kafka = { path = "crates/trellara-stream-kafka", default-features = false }
+trellara-stream-local = { path = "crates/trellara-stream-local" }
+trellara-verify = { path = "crates/trellara-verify" }
+uuid = { version = "1", features = ["serde", "v4"] }
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+panic = "abort"

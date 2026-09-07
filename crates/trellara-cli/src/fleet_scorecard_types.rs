@@ -1,0 +1,50 @@
+use serde::Serialize;
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub(crate) struct FleetScorecardSummary {
+    pub(crate) flow_count: usize,
+    pub(crate) verdict: String,
+    pub(crate) score: u8,
+    pub(crate) topology_verdict: String,
+    pub(crate) ready_flow_count: usize,
+    pub(crate) review_required_flow_count: usize,
+    pub(crate) blocked_flow_count: usize,
+    pub(crate) local_stream_count: usize,
+    pub(crate) kafka_stream_count: usize,
+    pub(crate) target_configured_count: usize,
+    pub(crate) configuration_ready_gate_count: usize,
+    pub(crate) needs_live_evidence_gate_count: usize,
+    pub(crate) blocked_gate_count: usize,
+    pub(crate) convergence_gate_count: usize,
+    pub(crate) blocked_convergence_gate_count: usize,
+    pub(crate) recovery_drill_count: usize,
+    pub(crate) lake_ready_flow_count: usize,
+    pub(crate) lake_publishable_with_gaps_flow_count: usize,
+    pub(crate) lake_blocked_flow_count: usize,
+    pub(crate) lake_fanin_verdict: String,
+    pub(crate) flows: Vec<FleetScorecardFlow>,
+    pub(crate) blockers: Vec<String>,
+    pub(crate) warnings: Vec<String>,
+    pub(crate) review_sequence: Vec<String>,
+    pub(crate) next_commands: Vec<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub(crate) struct FleetScorecardFlow {
+    pub(crate) flow_id: String,
+    pub(crate) config: String,
+    pub(crate) mode: String,
+    pub(crate) stream_kind: String,
+    pub(crate) target_configured: bool,
+    pub(crate) verdict: String,
+    pub(crate) score: u8,
+    pub(crate) gate_count: usize,
+    pub(crate) needs_live_evidence_gate_count: usize,
+    pub(crate) blocked_gate_count: usize,
+    pub(crate) convergence_gate_count: usize,
+    pub(crate) blocked_convergence_gate_count: usize,
+    pub(crate) recovery_drill_count: usize,
+    pub(crate) lake_fanin_status: String,
+    pub(crate) lake_fanin_mode: String,
+    pub(crate) risks: Vec<String>,
+}

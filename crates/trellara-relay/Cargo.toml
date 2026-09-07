@@ -1,0 +1,27 @@
+[package]
+name = "trellara-relay"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[features]
+default = []
+kafka = ["dep:trellara-stream-kafka", "trellara-stream-kafka/runtime"]
+
+[dependencies]
+async-trait.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+sha2.workspace = true
+trellara-checkpoint.workspace = true
+trellara-pg-capture.workspace = true
+trellara-pg-extension.workspace = true
+trellara-protocol.workspace = true
+trellara-stream.workspace = true
+trellara-stream-kafka = { workspace = true, optional = true }
+
+[dev-dependencies]
+tokio-postgres.workspace = true

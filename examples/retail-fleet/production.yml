@@ -1,0 +1,69 @@
+config_version: 2
+environment: production
+
+source:
+  id: retail-production
+  database_url:
+    source: environment_variable
+    name: TRELLARA_SOURCE_DATABASE_URL
+  publication: trellara_retail
+  slot: trellara_retail_slot
+  wal_retention_warn_bytes: 1073741824
+  stream_spill_threshold_changes: 1024
+  stream_spill_dir: /var/lib/trellara/spill
+  pgoutput:
+    protocol_version: 2
+    streaming: true
+
+dataset:
+  id: retail-sales
+  mode: strict_transaction_order
+  strict_chunking:
+    max_changes_per_chunk: 1000
+  tables:
+    - schema: public
+      name: sales
+      verify:
+        primary_key: id
+    - schema: public
+      name: sale_items
+      verify:
+        primary_key: id
+    - schema: public
+      name: payments
+      verify:
+        primary_key: id
+
+stream:
+  kind: kafka
+  bootstrap_servers: kafka-1.example.com:9093,kafka-2.example.com:9093,kafka-3.example.com:9093
+  topic: trellara.retail-production.retail-sales.strict
+  consumer_group: trellara-applier-retail-production-retail-sales
+  profile:
+    kind: production
+    contract:
+      contract_version: 1
+      ca_certificate:
+        source: file
+        path: /run/secrets/kafka-ca.pem
+      authentication:
+        kind: sasl_tls
+        mechanism: scram_sha512
+        username:
+          source: environment_variable
+          name: TRELLARA_KAFKA_USERNAME
+        password:
+          source: environment_variable
+          name: TRELLARA_KAFKA_PASSWORD
+      replication_factor: 3
+      min_insync_replicas: 2
+      producer_acks_all: true
+      producer_idempotence: true
+      consumer_auto_commit: false
+      store_offset_after_apply: true
+      synchronous_offset_commit: true
+
+target:
+  database_url:
+    source: environment_variable
+    name: TRELLARA_TARGET_DATABASE_URL

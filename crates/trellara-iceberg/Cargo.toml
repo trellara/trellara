@@ -1,0 +1,47 @@
+[package]
+name = "trellara-iceberg"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish = false
+
+[features]
+default = []
+iceberg-rust = ["dep:apache-iceberg", "dep:uuid"]
+production-writer = [
+    "iceberg-rust",
+    "dep:apache-iceberg-rest",
+    "dep:apache-iceberg-storage-opendal",
+    "dep:arrow-array",
+    "dep:arrow-schema",
+    "dep:futures",
+    "dep:opendal",
+    "dep:parquet",
+]
+live-catalog-tests = ["production-writer"]
+
+[dependencies]
+apache-iceberg = { package = "iceberg", version = "=0.10.1", optional = true }
+apache-iceberg-rest = { package = "iceberg-catalog-rest", version = "=0.10.1", optional = true }
+apache-iceberg-storage-opendal = { package = "iceberg-storage-opendal", version = "=0.10.1", default-features = false, features = ["opendal-s3"], optional = true }
+arrow-array = { version = "58", optional = true }
+arrow-schema = { version = "58", optional = true }
+async-trait.workspace = true
+bytes.workspace = true
+futures = { version = "0.3", optional = true }
+opendal = { version = "=0.57.0", default-features = false, features = ["executors-tokio", "reqwest-rustls-tls", "services-s3"], optional = true }
+parquet = { version = "58", optional = true }
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+time.workspace = true
+tokio.workspace = true
+trellara-checkpoint.workspace = true
+trellara-lake = { workspace = true, features = ["parquet-writer"] }
+uuid = { workspace = true, optional = true }
+
+[dev-dependencies]
+tokio.workspace = true

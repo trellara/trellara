@@ -1,0 +1,43 @@
+[package]
+name = "trellara-cli"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "trellara"
+path = "src/main.rs"
+
+[features]
+default = ["local-stream"]
+local-stream = ["dep:trellara-stream-local"]
+kafka = ["trellara-relay/kafka", "trellara-stream-kafka/runtime"]
+lake = ["dep:trellara-iceberg", "trellara-lake/parquet-writer"]
+full = ["local-stream", "kafka", "lake"]
+
+[dependencies]
+clap.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+trellara-checkpoint.workspace = true
+trellara-apply-postgres.workspace = true
+trellara-lake.workspace = true
+trellara-iceberg = { workspace = true, optional = true }
+trellara-pg-capture.workspace = true
+trellara-protocol.workspace = true
+trellara-relay.workspace = true
+trellara-runtime.workspace = true
+trellara-sim.workspace = true
+trellara-stream.workspace = true
+trellara-stream-kafka = { workspace = true, default-features = false }
+trellara-stream-local = { workspace = true, optional = true }
+trellara-verify.workspace = true
+
+[dev-dependencies]
+tokio-postgres.workspace = true

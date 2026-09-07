@@ -1,0 +1,63 @@
+name: PostgreSQL native extension
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/postgres-extension.yml"
+      - "Cargo.lock"
+      - "Cargo.toml"
+      - "crates/trellara-pg-extension/**"
+      - "crates/trellara-relay/**"
+      - "packaging/postgres-extension/**"
+      - "scripts/test-native-kafka-durability.sh"
+      - "scripts/test-native-postgres-extension.sh"
+  pull_request:
+    paths:
+      - ".github/workflows/postgres-extension.yml"
+      - "Cargo.lock"
+      - "Cargo.toml"
+      - "crates/trellara-pg-extension/**"
+      - "crates/trellara-relay/**"
+      - "packaging/postgres-extension/**"
+      - "scripts/test-native-kafka-durability.sh"
+      - "scripts/test-native-postgres-extension.sh"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-test-and-package:
+    name: PG${{ matrix.postgres }} live/crash/package
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: [15, 16, 17, 18]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - name: Build, live-test, and package
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packaging/postgres-extension/Dockerfile
+          build-args: PG_MAJOR=${{ matrix.postgres }}
+          outputs: type=local,dest=dist/pg${{ matrix.postgres }}
+      - name: Inspect packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          dpkg-deb --info dist/pg${{ matrix.postgres }}/*.deb
+          dpkg-deb --contents dist/pg${{ matrix.postgres }}/*.deb | grep /usr/bin/trellara-native-relay
+          rpm -qip dist/pg${{ matrix.postgres }}/*.rpm
+          rpm -qlp dist/pg${{ matrix.postgres }}/*.rpm | grep /usr/bin/trellara-native-relay
+          cd dist/pg${{ matrix.postgres }}
+          sha256sum --check SHA256SUMS
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: trellara-pg${{ matrix.postgres }}-linux-packages
+          path: dist/pg${{ matrix.postgres }}/

@@ -1,0 +1,41 @@
+use std::path::Path;
+
+pub(crate) fn pilot_package_first_commands(config_path: &Path) -> Vec<String> {
+    let config = config_path.display();
+    vec![
+        format!("trellara check --config {config} --format text"),
+        format!("trellara quickstart --config {config} --check"),
+        format!("trellara preflight --config {config}"),
+        format!("trellara run --local --verify --format text --config {config} --snapshot-run-id local-run-snapshot --max-transactions 100 --max-messages 100"),
+        format!("trellara status --config {config} --view report --format text"),
+        format!("trellara pilot-guide --config {config} --format text"),
+        format!("trellara pilot-scorecard --config {config} --format text"),
+        format!("trellara pilot-evidence --config {config} --format text"),
+        format!("trellara pilot evidence-template --config {config} --output <this-directory>/live-evidence --format text"),
+        format!("trellara pilot evidence-check --config {config} --evidence-dir <this-directory>/live-evidence --format text"),
+        format!("trellara evaluate --config {config} --format text"),
+        format!("trellara schema ddl-plan --config {config} --change add_nullable_column:public.sales.discount_code:text --apply-mode auto-safe --format text"),
+        format!("trellara schema ddl-apply-plan --config {config} --change add_nullable_column:public.sales.discount_code:text --apply-mode auto-safe --format text"),
+        format!("trellara lake spark-template current-state --config {config} --table public.sales --epoch-id epoch-2026-08-16T00 --accept-complete-with-gaps --format text"),
+        format!("trellara lake spark-template scd2 --config {config} --table public.sales --epoch-id epoch-2026-08-16T00 --accept-complete-with-gaps --format text"),
+        format!("trellara lake spark-template maintenance --config {config} --table public.sales --epoch-id epoch-2026-08-16T00 --accept-complete-with-gaps --format text"),
+        format!("trellara lake spark-template dashboard --config {config} --table public.sales --epoch-id epoch-2026-08-16T00 --accept-complete-with-gaps --format text"),
+        format!("trellara fleet report --config {config} --format text"),
+        format!("trellara fleet scorecard --config {config} --format text"),
+        format!("trellara fleet evidence-plan --config {config} --format text"),
+        format!("trellara consistency --config {config} --format text"),
+        format!("trellara performance --config {config} --format text"),
+        format!("trellara identity-audit --config {config} --format text"),
+        format!("trellara semantics --config {config}"),
+        format!("trellara lake ddl --config {config}"),
+        format!("trellara lake fanin plan --config {config}"),
+        format!("trellara lake fanin ddl --config {config}"),
+        format!("trellara lake fanin epoch-spec --config {config} --format text"),
+        format!("trellara lake epoch --config {config}"),
+        format!("trellara lake fanin verify --config {config} --stream-epoch <package>/lake-epoch.json --lake-epoch <package>/lake-epoch.json"),
+        format!("trellara lake fanin run --config {config} --file <package>/sample-envelope.pb --format text"),
+        format!("trellara lake writer-plan --config {config} --file <package>/sample-envelope.pb --format text"),
+        format!("trellara fleet control-plane --config {config}"),
+        "trellara evidence-registry --package <this-directory> --format text".to_string(),
+    ]
+}

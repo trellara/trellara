@@ -1,0 +1,7 @@
+comment = 'Trellara native PostgreSQL source data-plane foundation'
+default_version = '@CARGO_VERSION@'
+module_pathname = 'trellara_pg_extension'
+relocatable = false
+superuser = true
+trusted = false
+

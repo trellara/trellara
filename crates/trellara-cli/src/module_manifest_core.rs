@@ -1,0 +1,23 @@
+#[path = "module_manifest_args.rs"]
+pub(crate) mod module_manifest_args;
+#[path = "module_manifest_chaos.rs"]
+pub(crate) mod module_manifest_chaos;
+#[path = "module_manifest_core_config.rs"]
+pub(crate) mod module_manifest_core_config;
+#[path = "module_manifest_core_ddl.rs"]
+pub(crate) mod module_manifest_core_ddl;
+#[path = "module_manifest_core_execute.rs"]
+pub(crate) mod module_manifest_core_execute;
+#[path = "module_manifest_core_foundation.rs"]
+pub(crate) mod module_manifest_core_foundation;
+
+pub(crate) use consumer_stream::*;
+pub(crate) use ddl_labels::*;
+pub(crate) use dev_compose::*;
+pub(crate) use module_manifest_args::*;
+pub(crate) use module_manifest_chaos::*;
+pub(crate) use module_manifest_core_config::*;
+pub(crate) use module_manifest_core_ddl::*;
+pub(crate) use module_manifest_core_execute::*;
+pub(crate) use module_manifest_core_foundation::*;
+pub(crate) use protocol_labels::*;

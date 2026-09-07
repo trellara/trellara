@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  linux-x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install native build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1.97.1
+
+      - name: Build trellara-check
+        run: cargo build --release -p trellara-check
+
+      - name: Package trellara-check
+        run: |
+          mkdir -p dist/work/trellara-check-x86_64-unknown-linux-gnu
+          cp target/release/trellara-check dist/work/trellara-check-x86_64-unknown-linux-gnu/trellara-check
+          tar -C dist/work/trellara-check-x86_64-unknown-linux-gnu -czf dist/trellara-check-x86_64-unknown-linux-gnu.tar.gz trellara-check
+
+      - name: Build default trellara
+        run: cargo build --release -p trellara-cli --no-default-features --features local-stream
+
+      - name: Package default trellara
+        run: |
+          mkdir -p dist/work/trellara-x86_64-unknown-linux-gnu
+          cp target/release/trellara dist/work/trellara-x86_64-unknown-linux-gnu/trellara
+          tar -C dist/work/trellara-x86_64-unknown-linux-gnu -czf dist/trellara-x86_64-unknown-linux-gnu.tar.gz trellara
+
+      - name: Build full trellara
+        run: cargo build --release -p trellara-cli --features full
+
+      - name: Package full trellara
+        run: |
+          mkdir -p dist/work/trellara-full-x86_64-unknown-linux-gnu
+          cp target/release/trellara dist/work/trellara-full-x86_64-unknown-linux-gnu/trellara
+          tar -C dist/work/trellara-full-x86_64-unknown-linux-gnu -czf dist/trellara-full-x86_64-unknown-linux-gnu.tar.gz trellara
+
+      - name: Write checksums
+        run: |
+          cd dist
+          sha256sum *.tar.gz > SHA256SUMS
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: trellara-linux-x86_64-release
+          path: |
+            dist/*.tar.gz
+            dist/SHA256SUMS
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.tar.gz dist/SHA256SUMS --generate-notes --verify-tag

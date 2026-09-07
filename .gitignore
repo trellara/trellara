@@ -1,0 +1,17 @@
+/target/
+# docs/: the consolidated design, roadmap, and generated correctness report are
+# tracked. Temporary advisory memos and reviews stay local.
+/docs/*
+!/docs/DESIGN.md
+!/docs/ROADMAP.md
+!/docs/correctness-report.html
+/.idea/
+/.vscode/
+.DS_Store
+.env
+*.log
+*.tmp
+# website/: the marketing site and its generated docs are developed outside this
+# repository. Nothing in the build, tests, or CI reads website/ any more — the
+# product-positioning MVP criterion now checks README.md alone.
+/website/

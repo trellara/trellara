@@ -1,0 +1,24 @@
+[Unit]
+Description=Trellara durable native PostgreSQL relay
+After=local-fs.target
+
+[Service]
+Type=simple
+User=postgres
+Group=postgres
+EnvironmentFile=/etc/trellara/native-relay.env
+ExecStart=/usr/bin/trellara-native-relay
+Restart=on-failure
+RestartSec=1
+RuntimeDirectory=trellara
+RuntimeDirectoryMode=0750
+StateDirectory=trellara
+StateDirectoryMode=0750
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/run/trellara /var/lib/trellara
+
+[Install]
+WantedBy=multi-user.target

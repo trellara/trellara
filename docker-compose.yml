@@ -1,0 +1,111 @@
+services:
+  source-postgres:
+    image: postgres:16
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_replication_slots=16
+      - -c
+      - max_wal_senders=16
+    environment:
+      POSTGRES_DB: trellara_source
+      POSTGRES_PASSWORD: trellara
+      POSTGRES_USER: trellara
+    ports:
+      - "55432:5432"
+    volumes:
+      - ./docker/init/source:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trellara -d trellara_source"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  target-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: trellara_target
+      POSTGRES_PASSWORD: trellara
+      POSTGRES_USER: trellara
+    ports:
+      - "55433:5432"
+    volumes:
+      - ./docker/init/target:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trellara -d trellara_target"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - 1G
+      - --reserve-memory
+      - 0M
+      - --node-id
+      - "0"
+      - --check=false
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://localhost:9092
+    ports:
+      - "9092:9092"
+      - "9644:9644"
+
+  trellara-relay:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles:
+      - runtime
+    restart: unless-stopped
+    stop_grace_period: 35s
+    command:
+      - relay
+      - --config
+      - /etc/trellara/examples/retail-fleet/strict-docker.yml
+    depends_on:
+      source-postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:9401/readyz"]
+      interval: 5s
+      timeout: 2s
+      retries: 12
+      start_period: 10s
+
+  trellara-applier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles:
+      - runtime
+    restart: unless-stopped
+    stop_grace_period: 35s
+    command:
+      - apply
+      - --config
+      - /etc/trellara/examples/retail-fleet/strict-docker.yml
+    depends_on:
+      target-postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:9402/readyz"]
+      interval: 5s
+      timeout: 2s
+      retries: 12
+      start_period: 10s

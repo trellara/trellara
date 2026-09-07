@@ -1,0 +1,159 @@
+syntax = "proto3";
+
+package trellara.v1;
+
+message TransactionEnvelope {
+  uint32 protocol_version = 1;
+  string source_id = 2;
+  string database_id = 3;
+  string dataset_id = 4;
+  string transaction_id = 5;
+  string begin_lsn = 6;
+  string commit_lsn = 7;
+  int64 commit_timestamp_ms = 8;
+  repeated RelationSchemaVersion schema_versions = 9;
+  repeated ChangeRecord changes = 10;
+  TransactionManifest manifest = 11;
+  uint64 checksum = 12;
+  repeated DdlEvent ddl_events = 13;
+}
+
+message RelationSchemaVersion {
+  RelationId relation = 1;
+  uint64 version = 2;
+}
+
+message RelationId {
+  uint32 oid = 1;
+  string schema = 2;
+  string table = 3;
+}
+
+message ChangeRecord {
+  string transaction_id = 1;
+  uint32 total_order = 2;
+  uint32 table_order = 3;
+  uint32 partition_order = 4;
+  RelationId relation = 5;
+  Operation operation = 6;
+  ReplicaIdentity replica_identity = 7;
+  RowImage before = 8;
+  RowImage after = 9;
+  string idempotency_key = 10;
+}
+
+message RowImage {
+  repeated ColumnValue columns = 1;
+}
+
+message ColumnValue {
+  string name = 1;
+  uint32 type_oid = 2;
+  ValueKind value_kind = 3;
+  string text_value = 4;
+  bytes binary_value = 5;
+  bool is_key = 6;
+}
+
+message TransactionManifest {
+  string transaction_id = 1;
+  string source_commit_lsn = 2;
+  int64 source_commit_timestamp_ms = 3;
+  uint32 global_event_count = 4;
+  repeated ManifestPartition partitions = 5;
+  repeated AffectedTable affected_tables = 6;
+  ManifestBoundaryMode boundary_mode = 7;
+}
+
+message ManifestPartition {
+  uint32 id = 1;
+  uint32 event_count = 2;
+  uint32 first_total_order = 3;
+  uint32 last_total_order = 4;
+  uint64 checksum = 5;
+}
+
+message AffectedTable {
+  RelationId relation = 1;
+  uint32 event_count = 2;
+}
+
+message PartitionChunk {
+  string transaction_id = 1;
+  uint32 partition_id = 2;
+  repeated ChangeRecord changes = 3;
+  uint64 checksum = 4;
+}
+
+message TransactionCommitMarker {
+  string transaction_id = 1;
+  string source_commit_lsn = 2;
+  int64 source_commit_timestamp_ms = 3;
+  uint32 global_event_count = 4;
+  uint32 participating_partition_count = 5;
+  uint64 manifest_checksum = 6;
+}
+
+message DdlEvent {
+  string transaction_id = 1;
+  uint32 total_order = 2;
+  DdlOperation operation = 3;
+  RelationId relation = 4;
+  string statement = 5;
+  uint64 schema_fingerprint_before = 6;
+  uint64 schema_fingerprint_after = 7;
+  bool target_auto_apply = 8;
+  string release_gate = 9;
+}
+
+message Checkpoint {
+  string source_id = 1;
+  string dataset_id = 2;
+  string last_seen_lsn = 3;
+  string last_durable_lsn = 4;
+  string last_applied_lsn = 5;
+}
+
+enum Operation {
+  OPERATION_UNSPECIFIED = 0;
+  OPERATION_INSERT = 1;
+  OPERATION_UPDATE = 2;
+  OPERATION_DELETE = 3;
+  OPERATION_TRUNCATE = 4;
+}
+
+enum DdlOperation {
+  DDL_OPERATION_UNSPECIFIED = 0;
+  DDL_OPERATION_ADD_COLUMN = 1;
+  DDL_OPERATION_ADD_TABLE = 2;
+  DDL_OPERATION_WIDEN_COLUMN_TYPE = 3;
+  DDL_OPERATION_RENAME_COLUMN = 4;
+  DDL_OPERATION_RENAME_TABLE = 5;
+  DDL_OPERATION_DROP_COLUMN = 6;
+  DDL_OPERATION_ADD_NOT_NULL_COLUMN = 7;
+  DDL_OPERATION_CHANGE_PRIMARY_KEY = 8;
+  DDL_OPERATION_CHANGE_PARTITION_KEY = 9;
+  DDL_OPERATION_OTHER = 255;
+}
+
+enum ReplicaIdentity {
+  REPLICA_IDENTITY_UNSPECIFIED = 0;
+  REPLICA_IDENTITY_DEFAULT = 1;
+  REPLICA_IDENTITY_INDEX = 2;
+  REPLICA_IDENTITY_FULL = 3;
+  REPLICA_IDENTITY_NOTHING = 4;
+}
+
+enum ValueKind {
+  VALUE_KIND_UNSPECIFIED = 0;
+  VALUE_KIND_NULL = 1;
+  VALUE_KIND_TEXT = 2;
+  VALUE_KIND_BINARY = 3;
+  VALUE_KIND_UNCHANGED_TOAST = 4;
+}
+
+enum ManifestBoundaryMode {
+  MANIFEST_BOUNDARY_MODE_UNSPECIFIED = 0;
+  MANIFEST_BOUNDARY_MODE_STRICT_CHUNKED_TRANSACTION_ORDER = 1;
+  MANIFEST_BOUNDARY_MODE_PARTITIONED_SCALE = 2;
+}
