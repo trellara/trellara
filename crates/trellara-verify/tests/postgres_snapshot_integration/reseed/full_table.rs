@@ -10,6 +10,7 @@ async fn postgres_reseed_replaces_target_table_from_source_snapshot() -> TestRes
     let Some(target_url) = integration_database_url(TARGET_DATABASE_URL_ENV) else {
         return Ok(());
     };
+    let _guard = RESEED_INTEGRATION_LOCK.lock().await;
     reset_reseed_table(&source_url, true).await?;
     reset_reseed_table(&target_url, false).await?;
     insert_reseed_row(

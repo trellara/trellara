@@ -1,4 +1,28 @@
-# Trellara
+<p align="center">
+  <img src=".github/assets/trellara-social-preview.jpg" alt="Trellara: committed data crossing a verification boundary into PostgreSQL and Iceberg destinations" width="100%">
+</p>
+
+<h1 align="center">Trellara</h1>
+
+<p align="center">
+  <strong>Replication you can prove.</strong><br>
+  Source safety, durable change data capture, idempotent apply, and convergence evidence for PostgreSQL.
+</p>
+
+<p align="center">
+  <a href="https://github.com/trellara/trellara/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/trellara/trellara/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/trellara/trellara/actions/workflows/postgres-extension.yml"><img alt="PostgreSQL extension" src="https://github.com/trellara/trellara/actions/workflows/postgres-extension.yml/badge.svg?branch=main"></a>
+  <a href="LICENSE"><img alt="Apache-2.0 license" src="https://img.shields.io/github/license/trellara/trellara?color=22d3ee"></a>
+  <a href="docs/correctness-report.html"><img alt="Correctness evidence" src="https://img.shields.io/badge/correctness-evidence--first-14b8a6"></a>
+</p>
+
+<p align="center">
+  <a href="#ten-minute-local-evaluation">Try it</a> ·
+  <a href="docs/DESIGN.md">Understand the design</a> ·
+  <a href="docs/correctness-report.html">Inspect the evidence</a> ·
+  <a href="docs/ROADMAP.md">See the roadmap</a> ·
+  <a href="CONTRIBUTING.md">Contribute</a>
+</p>
 
 Trellara is an open-source source-safety and verified replication layer for PostgreSQL. It checks whether a source is safe for change data capture (CDC), carries committed transactions across a durable boundary, applies them idempotently, and produces evidence that downstream state converged.
 
@@ -9,11 +33,30 @@ The repository implements two related paths:
 
 The external relay is the default path because it works with managed PostgreSQL. A native PostgreSQL extension is available for self-managed deployments that can install and preload an extension.
 
+## One proof chain, five explicit boundaries
+
+| 1. Inspect | 2. Capture | 3. Commit | 4. Apply | 5. Prove |
+| --- | --- | --- | --- | --- |
+| Refuse unsafe sources before mutation. | Preserve committed transaction boundaries. | Acknowledge PostgreSQL only after durable publication. | Mutate, deduplicate, and checkpoint atomically. | Compare canonical state and package reviewable evidence. |
+
+The useful unit is not “a row arrived.” It is a traceable chain from source readiness to a durable
+commit, an idempotent destination state, and evidence that the two converged.
+
 ## Project status
 
 Trellara is pre-1.0 and being prepared for design-partner qualification. The core correctness contracts, local durable transport, Kafka adapter, PostgreSQL capture/apply path, verification, failure simulation, native-extension data plane, and feature-gated Iceberg writer are implemented and tested in this repository.
 
 The project does **not** yet claim broad production qualification. In particular, the cross-service live qualification harness, published multi-architecture release set, and customer-workload performance envelope remain roadmap work. See [the roadmap](docs/ROADMAP.md) for the evidence gates that must be cleared before those claims change.
+
+### Choose your starting point
+
+| Goal | Start here |
+| --- | --- |
+| Evaluate a PostgreSQL source without mutating it | Build and run [`trellara-check`](#standalone-source-safety-check). |
+| Exercise the full source-to-target loop locally | Run the [ten-minute evaluation](#ten-minute-local-evaluation). |
+| Audit the correctness model before trusting it | Read the [design](docs/DESIGN.md) and [generated evidence](docs/correctness-report.html). |
+| Understand what is proven versus planned | Review the [project status](#project-status) and [roadmap](docs/ROADMAP.md). |
+| Change the code or report a problem | Start with [CONTRIBUTING.md](CONTRIBUTING.md) or the [issue forms](https://github.com/trellara/trellara/issues/new/choose). |
 
 ## What Trellara guarantees
 
@@ -65,7 +108,7 @@ cargo build -p trellara-cli --release --features full
 
 The three commands produce the standalone diagnostic, the default brokerless CLI, and the full CLI with Kafka and lake features.
 
-Tagged releases currently publish Linux x86_64 tarballs:
+The tagged-release workflow is configured to publish Linux x86_64 tarballs:
 
 - `trellara-check-x86_64-unknown-linux-gnu.tar.gz`
 - `trellara-x86_64-unknown-linux-gnu.tar.gz`
@@ -181,7 +224,7 @@ Current-state and SCD2 outputs are rendered as epoch-gated Spark templates. Trel
 | Native extension release contract | PostgreSQL 17 and 18 on Linux |
 | Native extension CI/package matrix | PostgreSQL 15, 16, 17, and 18 |
 | Runtime architecture vocabulary | `amd64`, `arm64` |
-| Currently published CLI artifacts | Linux x86_64 tarballs |
+| Configured tagged-release artifacts | Linux x86_64 tarballs |
 
 The native build matrix and advertised release contract intentionally remain distinct here: CI coverage is not automatically a support promise. Aligning the two with live qualification evidence is a roadmap gate.
 
@@ -223,9 +266,19 @@ Service-backed tests are opt-in because they require PostgreSQL, Kafka/Redpanda,
 - [Design](docs/DESIGN.md) — authoritative architecture, invariants, implementation status, and operating contracts.
 - [Roadmap](docs/ROADMAP.md) — domain analysis, positioning, risks, evidence gates, and phased execution plan.
 - [Workspace guide](crates/README.md) — crate ownership and dependency map.
+- [Contributor guide](CONTRIBUTING.md) — setup, test tiers, correctness review, and pull request expectations.
+- [Agent guide](AGENTS.md) — repository-wide instructions for automated contributors.
+- [Security policy](SECURITY.md) and [support guide](SUPPORT.md) — private disclosure and public support routes.
 - Each crate's `README.md` and `skills.md` — package-specific behavior and contributor guardrails.
 
 If prose conflicts with serialized types, configuration validation, protocol fixtures, CLI help, or tested runtime constants, the executable contract wins and the prose should be corrected.
+
+## Contributing
+
+Contributions are welcome, especially focused fixes, reproducible failure cases, documentation
+corrections, and tests at correctness boundaries. Read [CONTRIBUTING.md](CONTRIBUTING.md) before
+opening a pull request and follow the [Code of Conduct](CODE_OF_CONDUCT.md). Report suspected
+vulnerabilities privately through [SECURITY.md](SECURITY.md).
 
 ## License
 

@@ -73,6 +73,19 @@ pub(crate) fn quarantined_envelope_record(
     Ok(QuarantinedEnvelopeRecord {
         transaction_key,
         reason: quarantine_reason(error),
-        detail: error.to_string(),
+        detail: quarantine_detail(error),
     })
+}
+
+fn quarantine_detail(error: &ApplyError) -> String {
+    if let ApplyError::Postgres(postgres_error) = error {
+        if let Some(database_error) = postgres_error.as_db_error() {
+            return format!(
+                "postgres error [{}]: {}",
+                database_error.code().code(),
+                database_error.message()
+            );
+        }
+    }
+    error.to_string()
 }

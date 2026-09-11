@@ -11,6 +11,7 @@ async fn postgres_reseed_imports_exported_source_snapshot() -> TestResult<()> {
     let Some(target_url) = integration_database_url(TARGET_DATABASE_URL_ENV) else {
         return Ok(());
     };
+    let _guard = RESEED_INTEGRATION_LOCK.lock().await;
     reset_reseed_table(&source_url, true).await?;
     reset_reseed_table(&target_url, false).await?;
     reset_slot(&source_url, EXPORTED_RESEED_SLOT).await?;

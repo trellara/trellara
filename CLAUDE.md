@@ -1,18 +1,12 @@
-## Skill routing
+# Claude Code instructions
 
-When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
+The canonical repository instructions are in [AGENTS.md](AGENTS.md). Read and follow that file
+before making changes.
 
-Key routing rules:
-- Product ideas/brainstorming → invoke /office-hours
-- Strategy/scope → invoke /plan-ceo-review
-- Architecture → invoke /plan-eng-review
-- Design system/plan review → invoke /design-consultation or /plan-design-review
-- Full review pipeline → invoke /autoplan
-- Bugs/errors → invoke /investigate
-- QA/testing site behavior → invoke /qa or /qa-only
-- Code review/diff check → invoke /review
-- Visual polish → invoke /design-review
-- Ship/deploy/PR → invoke /ship or /land-and-deploy
-- Save progress → invoke /context-save
-- Resume context → invoke /context-restore
-- Author a backlog-ready spec/issue → invoke /spec
+For work inside a crate, also read that crate's `README.md` and `skills.md`. Preserve Trellara's
+durability, acknowledgement, atomic-apply, fail-closed recovery, and evidence contracts; run the
+narrow crate checks while iterating and `make ci` before handing off a repository-wide change.
+
+Do not assume personal or machine-local skills, plugins, aliases, or commands are available to other
+contributors. Keep durable project guidance in this repository and keep personal tool routing in
+user-level configuration.
