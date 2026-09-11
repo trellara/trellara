@@ -26,7 +26,7 @@ live-catalog-tests = ["production-writer"]
 apache-iceberg = { package = "iceberg", version = "=0.10.1", optional = true }
 apache-iceberg-rest = { package = "iceberg-catalog-rest", version = "=0.10.1", optional = true }
 apache-iceberg-storage-opendal = { package = "iceberg-storage-opendal", version = "=0.10.1", default-features = false, features = ["opendal-s3"], optional = true }
-arrow-array = { version = "58", optional = true }
+arrow-array = { version = "59", optional = true }
 arrow-schema = { version = "58", optional = true }
 async-trait.workspace = true
 bytes.workspace = true

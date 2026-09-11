@@ -11,7 +11,7 @@ default = []
 parquet-writer = ["dep:arrow-array", "dep:arrow-schema", "dep:parquet"]
 
 [dependencies]
-arrow-array = { version = "58", optional = true }
+arrow-array = { version = "59", optional = true }
 arrow-schema = { version = "58", optional = true }
 parquet = { version = "58", optional = true }
 serde.workspace = true
