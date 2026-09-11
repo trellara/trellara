@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Install native build dependencies
         run: |
@@ -38,7 +38,7 @@ jobs:
           sudo apt-get install -y libcurl4-openssl-dev
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@1.97.1
+        uses: dtolnay/rust-toolchain@1.120.0
 
       - name: Run deterministic correctness tests
         run: cargo test --workspace
@@ -51,14 +51,14 @@ jobs:
         run: make correctness-site CORRECTNESS_REPORT=target/correctness-report.html
 
       - name: Upload report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: trellara-correctness-report
           path: target/correctness-site
           if-no-files-found: error
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: target/correctness-site
 
@@ -71,4 +71,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
