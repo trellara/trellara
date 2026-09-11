@@ -2970,7 +2970,7 @@ dependencies = [
  "md-5",
  "memchr",
  "rand 0.10.2",
- "sha2 0.11.0",
+ "sha2",
  "stringprep",
 ]
 
@@ -3417,7 +3417,7 @@ dependencies = [
  "mea",
  "percent-encoding",
  "sha1",
- "sha2 0.11.0",
+ "sha2",
  "windows-sys 0.61.2",
 ]
 
@@ -3916,17 +3916,6 @@ dependencies = [
 
 [[package]]
 name = "sha2"
-version = "0.10.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7507d819769d01a365ab707794a4084392c824f54a7a6a7862f8c3d0892b283"
-dependencies = [
- "cfg-if",
- "cpufeatures 0.2.17",
- "digest 0.10.7",
-]
-
-[[package]]
-name = "sha2"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "446ba717509524cb3f22f17ecc096f10f4822d76ab5c0b9822c5f9c284e825f4"
@@ -4326,7 +4315,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c2ad44aa0ae96db89c4742212ed41645b2f597311ff6e1945542a4d9fadc2fb"
 dependencies = [
  "rustls",
- "sha2 0.11.0",
+ "sha2",
  "tokio",
  "tokio-postgres",
  "tokio-rustls",
@@ -4515,7 +4504,7 @@ dependencies = [
  "async-trait",
  "prost",
  "serde",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "tokio",
  "tokio-postgres",
@@ -4545,7 +4534,7 @@ dependencies = [
  "async-trait",
  "proptest",
  "serde",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "tokio",
  "tokio-postgres",
@@ -4560,7 +4549,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "tokio",
  "tokio-postgres",
@@ -4595,7 +4584,7 @@ dependencies = [
  "parquet",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "time",
  "tokio",
@@ -4614,7 +4603,7 @@ dependencies = [
  "parquet",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "tokio",
  "trellara-checkpoint",
@@ -4650,7 +4639,7 @@ dependencies = [
  "pgrx",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "trellara-protocol",
 ]
 
@@ -4663,7 +4652,7 @@ dependencies = [
  "proptest",
  "prost",
  "serde",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "xxhash-rust",
 ]
@@ -4673,7 +4662,7 @@ name = "trellara-relay"
 version = "0.1.0"
 dependencies = [
  "async-trait",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "tokio",
  "tokio-postgres",
@@ -4722,7 +4711,7 @@ dependencies = [
  "async-trait",
  "rdkafka",
  "serde",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "trellara-stream",
 ]
@@ -4747,7 +4736,7 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "thiserror",
  "tokio",
  "tokio-postgres",
