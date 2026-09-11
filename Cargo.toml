@@ -41,7 +41,7 @@ serde_yaml = "0.9"
 sha2 = "0.10"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
 rustls-native-certs = "0.8"
-thiserror = "1"
+thiserror = "2"
 time = { version = "0.3", features = ["formatting", "macros", "serde"] }
 tokio = { version = "1", features = ["io-util", "macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
 tokio-postgres = "0.7"
