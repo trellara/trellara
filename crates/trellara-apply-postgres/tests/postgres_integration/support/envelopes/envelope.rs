@@ -6,7 +6,8 @@ pub(crate) fn envelope(
     commit_lsn: &str,
     changes: Vec<ChangeRecord>,
 ) -> TransactionEnvelope {
-    TransactionEnvelope::strict(StrictEnvelope {
+    let schema_versions = schema_versions_for_changes(&changes);
+    let mut envelope = TransactionEnvelope::strict(StrictEnvelope {
         source_id: SOURCE_ID.to_string(),
         database_id: DATABASE_ID.to_string(),
         dataset_id: DATASET_ID.to_string(),
@@ -15,7 +16,29 @@ pub(crate) fn envelope(
         commit_lsn: commit_lsn.to_string(),
         commit_timestamp_ms: 1_786_497_600_000,
         changes,
-    })
+    });
+    envelope.schema_versions = schema_versions;
+    envelope.finalize_checksum();
+    envelope
+}
+
+fn schema_versions_for_changes(changes: &[ChangeRecord]) -> Vec<RelationSchemaVersion> {
+    let mut schema_versions = Vec::<RelationSchemaVersion>::new();
+    for relation in changes.iter().filter_map(|change| change.relation.as_ref()) {
+        let already_recorded = schema_versions.iter().any(|schema_version| {
+            schema_version
+                .relation
+                .as_ref()
+                .is_some_and(|existing| existing.display_name() == relation.display_name())
+        });
+        if !already_recorded {
+            schema_versions.push(RelationSchemaVersion {
+                relation: Some(relation.clone()),
+                version: 12_345,
+            });
+        }
+    }
+    schema_versions
 }
 
 pub(crate) fn with_partition_manifest(

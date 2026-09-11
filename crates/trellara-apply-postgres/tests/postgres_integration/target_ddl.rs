@@ -118,12 +118,13 @@ async fn applies_target_ddl_from_envelope_then_dml_without_replaying_ddl() -> Te
         .await?;
     envelope.ddl_events = vec![DdlEvent::additive_column(
         &envelope.transaction_id,
-        2,
+        1,
         relation(),
         format!("ALTER TABLE public.{TABLE_NAME} ADD COLUMN ddl_envelope_marker text;"),
         12_345,
         67_890,
     )];
+    envelope.schema_versions[0].version = 67_890;
     envelope.finalize_checksum();
 
     let outcome = apply_target_ddl_envelope_then_dml(

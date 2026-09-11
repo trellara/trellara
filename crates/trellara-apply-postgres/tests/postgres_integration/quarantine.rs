@@ -36,7 +36,11 @@ async fn missing_target_table_fails_closed_without_checkpoint_or_dedup() -> Test
     assert_eq!(quarantine.transaction_id, "tx-missing-target");
     assert_eq!(quarantine.commit_lsn, "0/16B7200");
     assert_eq!(quarantine.reason, "target_postgres_error");
-    assert!(quarantine.detail.contains("trellara_apply_missing_sales"));
+    assert!(
+        quarantine.detail.contains("trellara_apply_missing_sales"),
+        "unexpected quarantine detail: {}",
+        quarantine.detail
+    );
 
     let retry = applier.apply_envelope(&envelope).await;
     assert!(matches!(retry, Err(ApplyError::Postgres(_))));
