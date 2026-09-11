@@ -1,0 +1,84 @@
+name: Bug report
+description: Report a reproducible defect or incorrect behavior
+title: "[bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for making Trellara safer. Do not include credentials, customer data, or an undisclosed vulnerability. Use the private security-reporting link for security issues.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and pull requests.
+          required: true
+        - label: I removed credentials, connection strings, private keys, and customer data.
+          required: true
+        - label: This is not an undisclosed security vulnerability.
+          required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Trellara revision
+      description: Release version or full commit SHA.
+      placeholder: v0.1.0 or 0123456789abcdef...
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Affected boundary
+      options:
+        - Source safety or discovery
+        - PostgreSQL capture or transaction assembly
+        - Durable stream or source acknowledgement
+        - PostgreSQL apply, checkpoint, or quarantine
+        - Verification or reseed
+        - Lakehouse or Iceberg
+        - CLI, configuration, or reporting
+        - Native extension or packaging
+        - Build, CI, or documentation
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, architecture, PostgreSQL version, and any broker, catalog, object-store, or container versions.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: List the smallest deterministic steps, commands, and sanitized configuration needed to reproduce the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the last boundary you know was trustworthy.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized logs or evidence
+      description: Paste only the relevant excerpt. Redact database URLs, tokens, row data, and infrastructure identifiers.
+      render: text
+  - type: textarea
+    id: verification
+    attributes:
+      label: Checks already run
+      placeholder: cargo test -p ...; make integration-test; ...

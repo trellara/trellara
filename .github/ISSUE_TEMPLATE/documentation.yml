@@ -1,0 +1,31 @@
+name: Documentation correction
+description: Report inaccurate, missing, or confusing documentation
+title: "[docs]: "
+labels:
+  - documentation
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Document location
+      description: Link the file, heading, command output, or line.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is inaccurate or unclear?
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Suggested correction
+      description: Include executable evidence when prose conflicts with code or CLI behavior.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, customer data, and other sensitive information.
+          required: true
