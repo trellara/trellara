@@ -37,10 +37,10 @@ jobs:
       matrix:
         postgres: [15, 16, 17, 18]
     steps:
-      - uses: actions/checkout@v5
-      - uses: docker/setup-buildx-action@v3
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
       - name: Build, live-test, and package
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: packaging/postgres-extension/Dockerfile
@@ -57,7 +57,7 @@ jobs:
           cd dist/pg${{ matrix.postgres }}
           sha256sum --check SHA256SUMS
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: trellara-pg${{ matrix.postgres }}-linux-packages
           path: dist/pg${{ matrix.postgres }}/
