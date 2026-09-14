@@ -30,7 +30,7 @@ async-trait = "0.1"
 bytes = { version = "1", features = ["serde"] }
 clap = { version = "4", features = ["derive"] }
 crc32fast = "1"
-fallible-iterator = "0.2"
+fallible-iterator = "0.3"
 postgres-protocol = "0.6"
 prost = "0.13"
 proptest = "1"
