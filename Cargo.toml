@@ -32,7 +32,7 @@ clap = { version = "4", features = ["derive"] }
 crc32fast = "1"
 fallible-iterator = "0.2"
 postgres-protocol = "0.6"
-prost = "0.13"
+prost = "0.14"
 proptest = "1"
 rdkafka = { version = "0.37", features = ["cmake-build"] }
 serde = { version = "1", features = ["derive"] }
